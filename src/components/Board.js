@@ -2,7 +2,7 @@ import React from "react";
 import Square from "./Square";
 
 function renderSquare(index) {
-  return <Square abc={index} />;
+  return <Square value={index} />;
 }
 export default function Board() {
   const status = "Next player: X";
