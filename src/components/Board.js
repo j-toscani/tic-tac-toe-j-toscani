@@ -1,11 +1,31 @@
 import React from "react";
 import Square from "./Square";
 
-function renderSquare(index) {
-  return <Square value={index} />;
-}
 export default function Board() {
-  const status = "Next player: X";
+  const [state, setState] = React.useState({
+    squares: Array(9).fill(null),
+    xIsNext: true
+  });
+
+  function handleClick(index) {
+    if (state.squares[index]) {
+      return;
+    }
+    //sliced() kopiert ein vorhandenes array
+    //ansonsten würde es als "pointer" fungieren
+    //Immutability: state nur via setState() ändern
+    const squaresCopy = state.squares.slice();
+    squaresCopy[index] = state.xIsNext ? "X" : "O";
+    setState({ squares: squaresCopy, xIsNext: !state.xIsNext });
+  }
+
+  function renderSquare(index) {
+    return (
+      <Square value={state.squares[index]} onClick={() => handleClick(index)} />
+    );
+  }
+
+  const status = `Next player: ${state.xIsNext ? "X" : "O"}`;
 
   return (
     <div>
