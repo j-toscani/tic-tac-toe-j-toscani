@@ -1,5 +1,7 @@
 import React from "react";
 import Square from "./Square";
+import { calculateWinner } from "../api/calculatewinner";
+import RefreshButton from "./resetbutton.js";
 
 export default function Board() {
   const [state, setState] = React.useState({
@@ -16,7 +18,10 @@ export default function Board() {
     //Immutability: state nur via setState() ändern
     const squaresCopy = state.squares.slice();
     squaresCopy[index] = state.xIsNext ? "X" : "O";
-    setState({ squares: squaresCopy, xIsNext: !state.xIsNext });
+    if (winner) {
+    } else {
+      setState({ squares: squaresCopy, xIsNext: !state.xIsNext });
+    }
   }
 
   function renderSquare(index) {
@@ -24,27 +29,46 @@ export default function Board() {
       <Square value={state.squares[index]} onClick={() => handleClick(index)} />
     );
   }
+  function resetBoard() {
+    setState({
+      squares: Array(9).fill(null),
+      xIsNext: true
+    });
+  }
 
-  const status = `Next player: ${state.xIsNext ? "X" : "O"}`;
+  function startNewGame() {
+    return <RefreshButton onClick={() => resetBoard()} />;
+  }
+
+  const winner = calculateWinner(state.squares);
+  let status;
+  if (winner) {
+    status = `Winner: ${winner}`;
+  } else {
+    status = `Next player: ${state.xIsNext ? "X" : "O"}`;
+  }
+
+  // status = `Next player: ${state.xIsNext ? "X" : "O"}`;
 
   return (
     <div>
       <div className="status">{status}</div>
       <div className="board-row">
+        {renderSquare(0)}
         {renderSquare(1)}
         {renderSquare(2)}
-        {renderSquare(3)}
       </div>
       <div className="board-row">
+        {renderSquare(3)}
         {renderSquare(4)}
         {renderSquare(5)}
-        {renderSquare(6)}
       </div>
       <div className="board-row">
+        {renderSquare(6)}
         {renderSquare(7)}
         {renderSquare(8)}
-        {renderSquare(9)}
       </div>
+      <div>{startNewGame()}</div>
     </div>
   );
 }
